@@ -12,18 +12,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             height: 100vh;
             background-color: #f4f4f4;
             margin: 0;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
         .container {
             text-align: center;
         }
         .card {
             width: 300px;
-            height: 200px;
+            height: 220px;
             perspective: 1000px;
             cursor: pointer;
+            margin-bottom: 40px;
         }
         .card-inner {
             width: 100%;
@@ -48,6 +55,7 @@
             font-size: 24px;
             font-weight: bold;
             text-align: center;
+            padding: 10px;
         }
         .front {
             background-color: #ffcc80;
@@ -56,10 +64,19 @@
             background-color: #81c784;
             transform: rotateY(180deg);
         }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
+        .card-number {
+            margin-bottom: 10px;
             font-size: 18px;
+            font-weight: bold;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 14px;
             cursor: pointer;
             background-color: #007BFF;
             color: white;
@@ -72,23 +89,33 @@
     </style>
 </head>
 <body>
+    <div class="title">Repasando integrales</div>
     <div class="container">
+        <div class="card-number" id="card-number">1 / 10</div>
         <div class="card" onclick="flipCard()">
             <div class="card-inner" id="flashcard">
-                <div class="card-face front" id="question">\( \int x \,dx \)</div>
+                <div class="card-face front" id="question">\( \int x \, dx \)</div>
                 <div class="card-face back" id="answer">\( \frac{x^2}{2} + C \)</div>
             </div>
         </div>
-        <button onclick="nextCard()">Siguiente</button>
+        <div class="buttons">
+            <button onclick="prevCard()">Anterior</button>
+            <button onclick="nextCard()">Siguiente</button>
+        </div>
     </div>
     
     <script>
         const flashcards = [
-            { question: "\\( \\int x \\,dx \\)", answer: "\\( \\frac{x^2}{2} + C \\)" },
-            { question: "\\( \\int e^x \\,dx \\)", answer: "\\( e^x + C \\)" },
-            { question: "\\( \\int \\sin x \\,dx \\)", answer: "\\( -\\cos x + C \\)" },
-            { question: "\\( \\int \\cos x \\,dx \\)", answer: "\\( \\sin x + C \\)" },
-            { question: "\\( \\int x^2 \\,dx \\)", answer: "\\( \\frac{x^3}{3} + C \\)" }
+            { question: "\\( \\int x \, dx \\)", answer: "\\( \\frac{x^2}{2} + C \\)" },
+            { question: "\\( \\int e^x \, dx \\)", answer: "\\( e^x + C \\)" },
+            { question: "\\( \\int \\sin x \, dx \\)", answer: "\\( -\\cos x + C \\)" },
+            { question: "\\( \\int \\cos x \, dx \\)", answer: "\\( \\sin x + C \\)" },
+            { question: "\\( \\int x^2 \, dx \\)", answer: "\\( \\frac{x^3}{3} + C \\)" },
+            { question: "\\( \\int \\tan x \, dx \\)", answer: "\\( \\ln |\\sec x| + C \\)" },
+            { question: "\\( \\int \\sec^2 x \, dx \\)", answer: "\\( \\tan x + C \\)" },
+            { question: "\\( \\int \\csc^2 x \, dx \\)", answer: "\\( -\\cot x + C \\)" },
+            { question: "\\( \\int \\sec x \\tan x \, dx \\)", answer: "\\( \\sec x + C \\)" },
+            { question: "\\( \\int \\csc x \\cot x \, dx \\)", answer: "\\( -\\csc x + C \\)" }
         ];
         
         let currentCard = 0;
@@ -99,8 +126,18 @@
         
         function nextCard() {
             currentCard = (currentCard + 1) % flashcards.length;
+            updateCard();
+        }
+        
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+        
+        function updateCard() {
             document.getElementById("question").innerHTML = flashcards[currentCard].question;
             document.getElementById("answer").innerHTML = flashcards[currentCard].answer;
+            document.getElementById("card-number").textContent = `${currentCard + 1} / ${flashcards.length}`;
             document.querySelector(".card").classList.remove("flipped");
             MathJax.typeset();
         }
